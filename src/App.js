@@ -1,11 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import './styles/App.scss';
+import PhoneAdvertisement from "./pages/PhoneAdvertisement";
+import {
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
 
-function App() {
+export default function App() {
   return (
     <div className="App">
+      <Switch>
+        <Route path="/phone-ad">
+          <PhoneAdvertisement testing="hello" />
+        </Route>
+      </Switch>
+
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <Link to="/phone-ad">
+          <img src="/images/logo.svg" className="App-logo" alt="logo" />
+        </Link>
+
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
@@ -22,4 +37,3 @@ function App() {
   );
 }
 
-export default App;
