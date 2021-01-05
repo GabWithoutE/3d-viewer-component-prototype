@@ -7,11 +7,12 @@ import PropTypes from 'prop-types';
  * @return {number}
  */
 function calculateCurrentImage(currentImage, action) {
-  if (action.scrollPosition < action.imagePosition) return currentImage;
+  return 0;
+  // if (action.scrollPosition < action.imagePosition) return currentImage;
 
-  return Math.min(
-    Math.floor((action.scrollPosition - action.imagePosition) / action.scrollSpacePerFrame),
-    action.numberOfImages);
+  // return Math.min(
+  //   Math.floor((action.scrollPosition - action.imagePosition) / action.scrollSpacePerFrame),
+  //   action.numberOfImages);
 }
 
 /**
@@ -38,7 +39,8 @@ export default function Scrolling3DViewerComponent({imagePath, images, scrollSpa
   const [currentImage, dispatchCurrentImage] = useReducer(calculateCurrentImage, 0);
 
   const [imagePosition] = useState(
-    document.getElementById("first-3d-image").getBoundingClientRect().y
+    // document.getElementsByClassName("3d-viewer")[0].getBoundingClientRect().y
+      0
   );
 
   useEffect(() => {
@@ -49,15 +51,15 @@ export default function Scrolling3DViewerComponent({imagePath, images, scrollSpa
       numberOfImages: images.length
     });
   }, [scrollPosition, images.length, scrollSpacePerFrame, imagePosition]);
+  console.log(currentImage);
 
   return (
-    <div>
+    <div className="3d-viewer">
       {images.map((image, index) => (
         <img
-          className={`3d-img ${index === currentImage ? "visible" : ""}`}
-          id={index === 0 && "3d-image"}
-          key={index}
-          src={imagePath + image}
+            className={`3d-img ${index === currentImage ? "visible" : ""}`}
+            key={index}
+            src={imagePath + image}
         />
       ))}
     </div>
