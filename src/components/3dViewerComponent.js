@@ -1,19 +1,5 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
-
-
-/**
- * @return {number}
- */
-function calculateCurrentImage(currentImage, action) {
-  return 0;
-  // if (action.scrollPosition < action.imagePosition) return currentImage;
-
-  // return Math.min(
-  //   Math.floor((action.scrollPosition - action.imagePosition) / action.scrollSpacePerFrame),
-  //   action.numberOfImages);
-}
 
 /**
  * Scrolling3DViewerComponent:
@@ -34,45 +20,52 @@ function calculateCurrentImage(currentImage, action) {
  *
  */
 
-export default function Scrolling3DViewerComponent({imagePath, images, scrollSpacePerFrame, scrollPosition}) {
-  // const [currentImage, setCurrentImage] = useReducer(, 0, () => return 0);
-  const [currentImage, dispatchCurrentImage] = useReducer(calculateCurrentImage, 0);
 
-  const [imagePosition] = useState(
-    // document.getElementsByClassName("3d-viewer")[0].getBoundingClientRect().y
-      0
-  );
+// TODO: Make the image float on the page, and change the image depending on the scroll position
+function Scrolling3DViewerComponent({imageConfig, scrollConfig}) {
+  const [viewerStyle] = useState({
+    height: `${(imageConfig.fileNames.length * scrollConfig.pixelsPerFrame) + imageConfig.dimensions.height}px`,
+    width: `${imageConfig.dimensions.width}px`,
+    margin: '0 auto',
+  });
+
+  const [imageStyle] = useState({
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
+  });
+
+  const [currentImage, setCurrentImage] = useState(imageConfig.path + imageConfig.fileNames[0]);
 
   useEffect(() => {
-    dispatchCurrentImage({
-      imagePosition: imagePosition,
-      scrollPosition: scrollPosition,
-      scrollSpacePerFrame: scrollSpacePerFrame,
-      numberOfImages: images.length
-    });
-  }, [scrollPosition, images.length, scrollSpacePerFrame, imagePosition]);
-  console.log(currentImage);
+    let index = Math.floor(scrollConfig.yPosition / scrollConfig.pixelsPerFrame);
+    setCurrentImage(imageConfig.path + imageConfig.fileNames[index]);
+  }, [scrollConfig.yPosition, scrollConfig.pixelsPerFrame, imageConfig.path, imageConfig.fileNames]);
 
   return (
-    <div className="3d-viewer">
-      {images.map((image, index) => (
-        <img
-            className={`3d-img ${index === currentImage ? "visible" : ""}`}
-            key={index}
-            src={imagePath + image}
-        />
-      ))}
+    <div className="viewer-3d" style={viewerStyle}>
+      <img className="img-3d" style={imageStyle} src={currentImage} />
     </div>
   );
 }
 
 Scrolling3DViewerComponent.propTypes = {
-  imagePath: PropTypes.string.isRequired,
-  images: PropTypes.arrayOf(PropTypes.string).isRequired,
-  scrollPosition: PropTypes.number.isRequired,
-  scrollSpacePerFrame: PropTypes.number.isRequired,
+  imageConfig: PropTypes.shape({
+    path: PropTypes.string.isRequired,
+    fileNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+    dimensions: PropTypes.shape({
+      width: PropTypes.number.isRequired,
+      height: PropTypes.number.isRequired
+    })
+  }),
+  scrollConfig: PropTypes.shape({
+    yPosition: PropTypes.number.isRequired,
+    pixelsPerFrame: PropTypes.number.isRequired,
+  })
 };
 
-Scrolling3DViewerComponent.defaultProps = {
-  scrollSpacePerFrame: 1
+export {
+  Scrolling3DViewerComponent
 };
+

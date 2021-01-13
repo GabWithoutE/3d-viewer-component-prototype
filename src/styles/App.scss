@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.viewer-3d {
+  .img-3d {
+
+  }
+  .img-3d.visible {
+    display: block;
+  }
+}
