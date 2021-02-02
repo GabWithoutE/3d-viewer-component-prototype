@@ -31,13 +31,12 @@ function Scrolling3DViewerComponent({id, imageConfig, scrollConfig, scrollYPosit
     margin: '0 auto',
   });
 
-  const [domPosition, setDomPosition] = useState(0);
+  const [, setDomPosition] = useState(0);
 
   useEffect(() => {
     setDomPosition(document.getElementById(id).getBoundingClientRect().top);
   }, [id]);
-  console.log(domPosition)
-  // const loading = useImagePreload(imageConfig.sources);
+
   useImagePreload(imageConfig.sources);
 
   const [currentImage, setCurrentImage] = useState(imageConfig.sources[0]);
